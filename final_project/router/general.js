@@ -29,27 +29,55 @@ public_users.get('/',function (req, res) {
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
- });
+public_users.get("/isbn/:isbn", function (req, res) {
+    const isbn = req.params.isbn;
+    if (!isbn) {
+      return res.status(400).json({ message: "Enter isbn to check" });
+    }
+    const book = books[isbn];
+    if (book) {
+      return res.status(200).json(book);
+    }
+  
+    return res.status(404).json({ message: "Book not found" });
+  });
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const author = req.params.author;
+    if(!author) {
+        return res.status(400).json({message: "Enter author to check"});
+    }
+    let filteredBooks = Object.values(books).filter((book) => book.author.includes(author))
+
+    return res.status(200).json(filteredBooks);
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+    const title = req.params.title;
+    if(!title) {
+        return res.status(400).json({message: "Enter title to check"});
+    }
+    let filteredBooks = Object.values(books).filter((book) => book.title.includes(title))
+
+    return res.status(200).json(filteredBooks);
 });
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  return res.status(300).json({message: "Yet to be implemented"});
+  const isbn = req.params.isbn;
+  if(!isbn) {
+    return res.status(400).json({message: "Enter valid isbn"})
+  }
+  const book = books[isbn];
+  const reviews = book.reviews
+
+    if(!book || reviews.length === 0) {
+        return res.status(400).json({message: "No reviews found"});
+    } else {
+        return res.status(200).json(reviews)
+    }
 });
 
 module.exports.general = public_users;
